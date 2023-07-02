@@ -5,10 +5,14 @@ namespace MultilingualChatBot
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {
-        public AdapterWithErrorHandler(BotFrameworkAuthentication auth, ILogger<IBotFrameworkHttpAdapter> logger)
-            : base(auth, logger)
+        public AdapterWithErrorHandler(
+            LocalizationMiddleware localizationMiddleware, 
+            BotFrameworkAuthentication auth,
+            ILogger<IBotFrameworkHttpAdapter> logger) : base(auth, logger)
 
         {
+            Use(localizationMiddleware);
+
             OnTurnError = async (turnContext, exception) =>
             {
                 // Log any leaked exception from the application.

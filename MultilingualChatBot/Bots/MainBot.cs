@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Localization;
 using MultilingualChatBot.Resources;
@@ -36,16 +35,6 @@ namespace MultilingualChatBot.Bots
         protected override Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var language = turnContext.Activity.Text;
-
-            var culture = language switch
-            {
-                "English" => "en-US",
-                "Українська" => "uk-UA",
-                _ => "en-US"
-            };
-
-            CultureInfo.CurrentCulture = new CultureInfo(culture);
-            CultureInfo.CurrentUICulture = new CultureInfo(culture);
 
             var welcomeMsg = _localizer["WelcomeMessage", language];
 
