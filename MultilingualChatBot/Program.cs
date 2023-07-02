@@ -6,6 +6,9 @@ using MultilingualChatBot.Bots;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add localization
+builder.Services.AddLocalization();
+
 // Create the Bot Framework Authentication to be used with the Bot Adapter
 builder.Services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 

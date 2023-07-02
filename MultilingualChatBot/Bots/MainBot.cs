@@ -1,10 +1,18 @@
-﻿using Microsoft.Bot.Builder;
+﻿using System.Globalization;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Localization;
+using MultilingualChatBot.Resources;
 
 namespace MultilingualChatBot.Bots
 {
     public class MainBot : ActivityHandler
     {
+        private readonly IStringLocalizer<BotMessages> _localizer;
+
+        public MainBot(IStringLocalizer<BotMessages> localizer) =>
+            _localizer = localizer;
+
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             foreach (var member in membersAdded)
@@ -27,8 +35,21 @@ namespace MultilingualChatBot.Bots
 
         protected override Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var replyText = $"Your language is **{turnContext.Activity.Text}**";
-            return turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+            var language = turnContext.Activity.Text;
+
+            var culture = language switch
+            {
+                "English" => "en-US",
+                "Українська" => "uk-UA",
+                _ => "en-US"
+            };
+
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            CultureInfo.CurrentUICulture = new CultureInfo(culture);
+
+            var welcomeMsg = _localizer["WelcomeMessage", language];
+
+            return turnContext.SendActivityAsync(MessageFactory.Text(welcomeMsg, welcomeMsg), cancellationToken);
         }
     }
 }
